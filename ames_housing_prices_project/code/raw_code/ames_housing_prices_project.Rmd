@@ -1,0 +1,207 @@
+---
+title: "ames_housing_prices_project"
+author: "Yamato Kataoka"
+date: "12/31/2018"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+# install packages if necessary
+list.of.packages <- c("tidyverse","rpart", "randomForest", "modelr", "caret")
+new.packages <- list.of.packages[!(list.of.packages %in% installed.packages()[,"Package"])]
+if(length(new.packages)) install.packages(new.packages)
+
+# load in packages we'll use
+library(tidyverse) # utility functions
+library(rpart) # for regression trees
+library(randomForest) # for random forests
+library(modelr) # for the MAE of model
+library(caret) # for spliting the dataset
+
+# set working directory
+knitr::opts_knit$set(root.dir = '/cloud/project/ames_housing_prices_project')
+```
+
+For this project, we are looking at the data science question:
+
+> Can you figure out how much a house will sell for?
+
+### The Data
+
+#### Accessing Data
+
+Now, we'll download and get the data directly from the competitions data [here](https://www.kaggle.com/c/house-prices-advanced-regression-techniques/data).
+
+The [Ames Housing dataset](http://jse.amstat.org/v19n3/decock.pdf) was compiled by Dean De Cock for use in data science education. It's an incredible alternative for data scientists looking for a modernized and expanded version of the often cited Boston Housing dataset. 
+
+Here's a brief file description;
+
+* train.csv - the training set
+
+* test.csv - the test set
+
+* data_description.txt - full description of each column, originally prepared by Dean De Cock but lightly edited to match the column names used here
+
+* sample_submission.csv - a benchmark submission from a linear regression on year and month of sale, lot square footage, and number of bedrooms
+
+You can find the data dictionaries for on [https://www.kaggle.com/c/house-prices-advanced-regression-techniques/data](https://www.kaggle.com/c/house-prices-advanced-regression-techniques/data)
+
+#### Loading Data
+
+We'll load the data and run the code below to create an object called `iowa_data`.
+
+```{r iowa-data, warning=FALSE}
+# You'd read the data and store data in a tibble
+iowa_data <- read_csv("data/raw_data/train.csv") 
+
+# we'll make sure Condition1 is a factor & not a char
+iowa_data$Condition1 <- as.factor(iowa_data$Condition1)
+```
+
+### Exploratory Analysis of Housing Prices Data
+
+```{r summary-data}
+# now we'll summarize the iowa_data dataframe
+summary(iowa_data)
+```
+
+Each little chunk of output (e.g. "X1", "Suburb", "Address", "Rooms") tell us about a specific column in our dataframe.
+
+If the column is numeric, though, it will list information about the mean, median, 25th and 75th quartiles, minimum and maximum.
+
+The median year in which the houses in this dataset were built is 1973 (`YearBuilt`). In addtion, we'll find that the maximum number or rooms are 14 (`TotRmsAbvGrd`).
+
+### Prediction Data Analysis
+
+#### Data Splitting
+
+We'll take our dataset and split it into a `training` set and a `tuning` set. 
+
+```{r splitting-data}
+## get Index for training set
+set.seed(123)
+trainIndex <- createDataPartition(iowa_data$Id, p = .7, 
+                                  list = FALSE, 
+                                  times = 1)
+
+## split into training and tuning set                                  
+iowa_train <- iowa_data %>% slice(trainIndex)
+iowa_tune <- iowa_data %>% slice(-trainIndex)
+```
+
+#### Decision Tree analysis
+
+We can then fit a new model using our training data and test it using our testing data.
+
+We'll be predicting the `SalePrice` variable. And we start with a narrower set of numeric variables and fit a model that can predict your target variable using the following predictors;
+
+* LotArea
+
+* YearBuilt
+
+* Condition1 (how close to the main road the house is)
+
+* FullBath
+
+* BedroomAbvGr
+
+* TotRmsAbvGrd
+
+We're going to use the `rpart()` function from the `rpart package` to build our decision tree using the prediction target (`SalePrice`) and predictors (`set of numeric variables`).
+
+```{r modeling}
+# build a model to predict housing prices in Iowa using our training set
+fit <- rpart(SalePrice ~ TotRmsAbvGrd + FullBath + LotArea + Condition1 +
+             YearBuilt + BedroomAbvGr, data = iowa_train)
+# get the mean average error for our model
+mae(model = fit, data = iowa_tune)
+```
+
+Then, we just started with one called Mean Absolute Error (also called MAE) for summarizing model quality.
+
+The prediction error for each house is:
+
+> $error=actual−predicted$
+
+With the MAE metric, we take the absolute value of each error. This converts each error to a positive number. We then take the average of those absolute errors. This is our measure of model quality.
+
+We can get the MAE for our model using the `mae()` function, from the `modelr package`. The `mae()` function takes in a model and the dataset to test it against.
+
+On average, our predictions are off by about 37534.09 dollars.
+
+Now, we built prediction model, so we can actually look at the tree it has built.
+
+```{r model}
+# plot our regression tree 
+plot(fit, uniform=TRUE)
+# add text labels & make them 60% as big as they are by default
+text(fit, cex=.6)
+```
+
+We can now use our fitted model to predict the prices of some houses, using the `predict()` function for our tuning set.
+
+```{r predict, collapse = T}
+print("Making predictions for the following 5 houses:")
+print(head(iowa_tune))
+
+print("The predictions are")
+print(predict(fit, head(iowa_tune)))
+
+print("Actual price")
+print(head(iowa_tune$SalePrice))
+```
+
+So, as you can above, the first house we predicted cost 181,500 dollars and you predicted it would cost 150,232.8 dollars the error is 31,267.2 dollars.
+
+Then now, we are setting the tree depth with the maxdepth argument to control overfitting vs underfitting.
+
+We can use a utility function to help compare MAE scores from different values for maxdepth:
+
+```{r maxdepth-fanction}
+# a function to get the maximum average error for a given max depth. You should pass in
+# the target as the name of the target column and the predictors as vector where
+# each item in the vector is the name of the column
+get_mae <- function(maxdepth, target, predictors, training_data, tuning_data){
+    
+    # turn the predictors & target into a formula to pass to rpart()
+    predictors <- paste(predictors, collapse="+")
+    formula <- as.formula(paste(target,"~",predictors,sep = ""))
+    
+    # build our model
+    model <- rpart(formula, data = training_data,
+                   control = rpart.control(maxdepth = maxdepth))
+    # get the mae
+    mae <- mae(model, tuning_data)
+    return(mae)
+}
+```
+
+We can use a for-loop to compare the accuracy of models built with different values for maxdepth. In this case, the lowest MAE is actually 5.
+
+```{r useing-fanction}
+# target & predictors to feed into our formula
+target <- "SalePrice"
+predictors <-  c("TotRmsAbvGrd", "FullBath", "LotArea", "Condition1", "YearBuilt", "BedroomAbvGr")
+
+# get the MAE for maxdepths between 1 & 10
+for(i in 1:10){
+    mae <- get_mae(maxdepth = i, target = target, predictors = predictors,
+                  training_data = iowa_train, tuning_data = iowa_tune)
+    print(glue::glue("Maxdepth: ",i,"\t MAE: ",mae))
+}
+```
+
+37,534.09 is the lowest mean average error for this dataset, which is given this dataset and our current stopping condition, 6 is the maximum number of nodes.
+
+#### Random Forests analysis
+
+```{r modeling_random_forests}
+# fit a random forest model to our training set
+fitRandomForest <- randomForest(SalePrice ~ TotRmsAbvGrd + FullBath + LotArea + Condition1 +
+             YearBuilt + BedroomAbvGr, data = iowa_train)
+# get the mean average error for our new model, based on our tuning set
+mae(model = fitRandomForest, data = iowa_tune)
+```
+
+On average, this predictions are off by around 30,894.18 dollars. This is a big improvement over our previous best decision tree.
+

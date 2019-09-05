@@ -1,0 +1,127 @@
+---
+title: "Data Tidying Project"
+author: "Yamato Kataoka"
+date: "11/9/2018"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+## install packages if necessary
+list.of.packages <- c("httr", "readxl", "dplyr", "tidyr", "stringr", "reshape2", "skimr", "ggplot2")
+new.packages <- list.of.packages[!(list.of.packages %in% installed.packages()[,"Package"])]
+if(length(new.packages)) install.packages(new.packages)
+
+## load packages
+library(httr)
+library(readxl)
+library(dplyr)
+library(tidyr)
+library(stringr)
+library(reshape2)
+library(skimr)
+library(ggplot2)
+```
+
+### Get Data
+
+[Data Set 1](https://data.world/retail/department-store-sales): Sales from the Retail Trade and Food Services Report from the US Census. This dataset only covers Department Stores, though the report covers a wide range of retail types. [1992-2016]
+
+[Data Set 2](https://data.world/garyhoov/retail-sales-growth): US Retail Sales by Store Type with Growth Rate [2009-2014]
+
+```{r data, warning=FALSE} 
+#1992-2016
+#https://data.world/retail/department-store-sales
+
+GET("https://query.data.world/s/gdk7iwtlisq6vkktmybqqr7hjjty5s", write_disk(tf <- tempfile(fileext = ".xls")))
+df1 <- read_excel(tf)
+
+#2009-2014
+# https://data.world/garyhoov/retail-sales-growth
+GET("https://query.data.world/s/py7kinxvyuxjpzwdjs2ti4wdmui6bi", write_disk(tf <- tempfile(fileext = ".xls")))
+df2 <- read_excel(tf)
+## the the first row and make that the column names of the data frame
+colnames(df2) <- df2[1,]
+```
+
+### Save Raw Data
+
+I'm saving the both data objects as df_department.rds and as df_retail.rds. The objects moved into 'data/raw_data'.
+
+```{r save-data, warning=FALSE} 
+## use saveRDS() to save each object as a .rds file 
+saveRDS(df1, file="df_department.rds")
+saveRDS(df2, file="df_retail.rds")
+```
+
+### Wrangle Data
+
+I'm wrangling the data which is currently in the wide data format, into a long data format which will have three columns: `business`, `year`, and `n`. 
+
+```{r wrangle-df2, warning=FALSE} 
+## an example working with df2
+## let's wrangle!
+df_retail <- df2 %>%
+  ## remove the r from the column names of df2
+  magrittr::set_colnames(gsub("r","",df2[1,])) %>% 
+  ## add a new column called "business"
+  mutate(business = gsub("[…]|[.]","",`Kind of business`)) %>%
+  ## filter to include Retail sales or Department stores sales
+  filter(grepl('Retail sales, total |Department stores', business)) %>%
+  ## only look at columns with year information in them
+  select(.,c(matches('19|20'),business)) %>%
+  ## take year column and collapse them into a single column
+  gather(., "year", "n", 1:(ncol(.)-1)) %>%
+  ## make sure the count column `n` is numeric
+  mutate(n=as.numeric(n)) %>%
+  ## filter to only include the businesses we're interested in
+  filter(business == "Retail sales, total "| business=="Department stores ")
+```
+
+This code chunk has added the new columns: value and business.
+
+```{r wrangle-df1, warning=FALSE} 
+## now, your turn!
+## work with df1
+df_department <- df1 %>% 
+  ## split Period column into one column called "month" and one called "year"
+  separate(Period, into = c('month','year'), extra = 'drop', remove = FALSE) %>%
+  ## add a column `value` which contains the 
+  ## information from the `Value (in millions)` 
+  mutate(value = `Value (in millions)`) %>%
+  ## group the data frame by the `year` column
+  group_by(year) %>%
+  ## Summarize the data by creating a new column
+  ## call this column `n` 
+  ## have it contain the sum of the `value` column
+  mutate(n = sum(value)) %>% 
+  ### create a new column called `business`
+  ## set the value of this column to  be "department stores" 
+  ## for the entire data set 
+  mutate(business = "department stores") %>%
+  ## reorder column names to be : business, year, n
+  select(business, year, n)
+```
+
+Merging the two data frames.
+
+```{r merge-data, warning=FALSE} 
+## Now, combine the two data frames
+df_total <- df_retail %>%
+  left_join(df_department)
+```
+
+This code will plot these three data below.
+
+```{r plot, warning=FALSE, fig.width=10} 
+## Plot Retail Sales data
+ggplot(df_retail, aes(x=year,y=n,colour=business)) +
+  geom_point() 
+
+## Plot Department Sales data
+ggplot(df_department, aes(x=year,y=n)) +
+  geom_point() 
+
+## Plot Combined Data
+ggplot(df_total, aes(x=year,y=as.numeric(n), colour=business)) +
+  geom_point()
+```

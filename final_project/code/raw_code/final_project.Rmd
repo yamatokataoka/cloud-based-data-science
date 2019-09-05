@@ -1,0 +1,307 @@
+---
+title: "final_project"
+author: "Yamato Kataoka"
+date: "8/10/2018"
+output:
+  html_document: default
+---
+
+
+```{r setup, include=FALSE}
+## install packages if necessary
+list.of.packages <- c("janitor", "ggplot2", "dplyr", "lubridate", "zoo", "forcats", "ggthemes", "knitr", "rmarkdown", "tidyr")
+new.packages <- list.of.packages[!(list.of.packages %in% installed.packages()[,"Package"])]
+if(length(new.packages)) install.packages(new.packages)
+
+## load packages
+library(janitor)
+library(ggplot2)
+library(dplyr)
+library(lubridate)
+library(zoo)
+library(forcats)
+library(ggthemes)
+library(knitr)
+library(tidyr)
+
+## set working directory
+knitr::opts_knit$set(root.dir = '/cloud/project/final_project')
+```
+
+### The Data
+
+The American Time Use Survey (ATUS) is a time-use survey of Americans, which is sponsored by the Bureau of Labor Statistics (BLS) and conducted by the U.S. Census Bureau. Respondents of the survey are asked to keep a diary for one day carefully recording the amount of time they spend on various activities including working, leisure, childcare, and household activities. The survey has been conducted every year since 2003.
+
+Included in the data are main demographic variables such as respondents' age, sex, race, marital status, and education. The data also includes detailed income and employment information for each respondent. While there are some slight changes to the survey each year, the main questions asked stay the same. You can find the data dictionaries for each year on [https://www.bls.gov/tus/dictionaries.htm](https://www.bls.gov/tus/dictionaries.htm)
+
+
+### Accessing the Data
+
+There are multiple ways to access the ATUS data; however, for this project, you'll get the raw data directly from the source. The data for each year can be found at [https://www.bls.gov/tus/#data](https://www.bls.gov/tus/#data). Once there, there is an option of downloading a multi-year file, which includes data for all of the years the survey has been conducted, but **for the purposes of this project, let's just look at the data for 2016**. Under **Data Files**, click on `American Time Use Survey--2016 Microdata files`. 
+
+You will be brought to a new screen. Scroll down to the section **2016 Basic ATUS Data Files**. Under this section, you'll want to **click to download** the following two files: `ATUS 2016 Activity summary file (zip)` and `ATUS-CPS 2016 file (zip)`. 
+
+* `ATUS 2016 Activity summary file (zip)` contains information about the total time each ATUS respondent spent doing each activity listed in the survey. The activity data includes information such as activity codes, activity start and stop times, and locations.
+* `ATUS-CPS 2016 file (zip)` contains information about each household member of all individuals selected to participate in the ATUS.
+
+Once they've been downloaded, you'll need to **unzip the files**. Once unzipped, you will see the dataset in a number of different file formats including `.sas`, `.sps`, and `.dat` files. **We'll be working with the .dat files.**
+
+### Loading the Data into R
+
+Use the first approach explained above to download and access the ATUS data for 2016. Download the CPS and Activity Summary files in a folder and unzip them and within each folder upload the files ending in .dat to `data/raw_data` filder on RStudio.cloud. To load the data in, **run the code in the `atus-data` code chunk** to create an object called `atus.all`.
+
+### Importing data
+
+This will create an object called `atus.all`.
+
+```{r atus-data, warning=FALSE}
+atus.cps <- read.delim('data/raw_data/atuscps_2016.dat', sep=",")
+atus.sum <- read.delim('data/raw_data/atussum_2016.dat', sep=",")
+atus.all <- atus.sum %>%
+  left_join(atus.cps %>% filter(TULINENO==1), by = c("TUCASEID"))
+```
+
+### Exploratory Analysis of Child Care Data
+
+You can find data dictionaries (also called codebooks) at [https://www.bls.gov/tus/atuscpscodebk16.pdf](https://www.bls.gov/tus/atuscpscodebk16.pdf) for the CPS data and at [https://www.bls.gov/tus/atusintcodebk16.pdf](https://www.bls.gov/tus/atusintcodebk16.pdf) for the rest of the variables.
+
+A lot of the information about the variables in the data and how they are coded can be found here.
+
+```{r initial-exploration}
+## Add Code Here
+## Question2: what column is associated with the activity “playing computer games”?
+## t120307 from https://www.bls.gov/tus/lexiconwex2016.pdf
+## Question3: How much time, on average, does a person in the sample spend on “Socializing and communicating with others”?
+## “Socializing and communicating with others” is 120101 from https://www.bls.gov/tus/lexiconwex2016.pdf
+mean(atus.all$t120101)
+```
+
+I created a column in the data frame `atus.all` called `CHILDCARE` that is the sum of all the columns that start with `t0301`.
+
+```{r creating-childcare-var}
+atus.all <- atus.all %>%
+  mutate(CHILDCARE = rowSums(.[, grep('t0301', colnames(.))]))
+```
+
+I wiriting code in `ggplot2` to plot the density function of the variable `CHILDCARE`.
+
+```{r childcare-density-plot}
+ggplot(atus.all) +
+  geom_density(aes(atus.all$CHILDCARE))
+```
+
+### Inferential Data Analysis
+
+I'm going to answer whether women or men spend more time with their children. Just start by grouping individuals by their gender and calculate the average time men and women spend with their children. 
+
+```{r gender-analysis}
+atus.all %>% 
+  group_by(TESEX) %>% 
+  summarize(.,  average_time = mean(CHILDCARE, na.rm = T))
+```
+
+I'm replacing these values with `NA` in your data so they don’t affect your analysis. 
+
+```{r replacing-na}
+## replace -1 in the variable TRDPFTPT with NA.
+atus.all$TRDPFTPT[atus.all$TRDPFTPT==-1]  <- "NA"
+```
+
+I'm going to answer questions like:
+
+- Do younger parents spend more time with their children?
+- Do richer people spend more time with their children compared to poorer people?
+- Do married couples spend more time with their children compared to single parents?
+- Do full-time workers spend more time with their children compared to part-time workers?
+
+```{r exploratory-analysis}
+## add your exploratory analysis code here
+## limit data to those who have at least one child (18 or younger) in the household
+labs <- c(paste(seq(0, 95, by = 5), seq(0 + 5 - 1, 100 - 1, by = 5), sep = "-"), paste(100, "+", sep = ""))
+
+atus.all$AGEGROUP <- cut(atus.all$TEAGE, breaks = c(seq(0, 100, by = 5), Inf), labels = labs, right = FALSE)
+
+atus.all.child <- atus.all %>%
+  filter(.$TRCHILDNUM > 0) 
+
+## Do younger parents spend more time with their children?
+AGEGROUP.CHILDCARE <- atus.all.child %>%
+  group_by(AGEGROUP) %>% 
+  summarize(.,  average_time = mean(CHILDCARE, na.rm = T))
+
+ggplot(AGEGROUP.CHILDCARE, aes(x = AGEGROUP.CHILDCARE$AGEGROUP, y = AGEGROUP.CHILDCARE$average_time)) +
+  geom_col()
+
+## Do richer people spend more time with their children compared to poorer people?
+HEFAMINC.CHILDCARE <- atus.all.child %>%
+  group_by(HEFAMINC) %>% 
+  summarize(.,  average_time = mean(CHILDCARE, na.rm = T))
+
+ggplot(HEFAMINC.CHILDCARE, aes(x = HEFAMINC.CHILDCARE$HEFAMINC, y = HEFAMINC.CHILDCARE$average_time)) +
+  geom_col()
+## Do married couples spend more time with their children compared to single parents?
+PEMARITL.CHILDCARE <- atus.all.child %>%
+  group_by(PEMARITL) %>% 
+  summarize(.,  average_time = mean(CHILDCARE, na.rm = T))
+
+ggplot(PEMARITL.CHILDCARE, aes(x = PEMARITL.CHILDCARE$PEMARITL, y = PEMARITL.CHILDCARE$average_time)) +
+  geom_col()
+
+## Do full-time workers spend more time with their children compared to part-time workers?
+TRDPFTPT.CHILDCARE <- atus.all.child %>%
+  group_by(TRDPFTPT) %>% 
+  summarize(.,  average_time = mean(CHILDCARE, na.rm = T))
+
+PESCHFT.CHILDCARE <- atus.all %>%
+  filter(.$TRCHILDNUM > 0) %>%
+  group_by(PESCHFT) %>%
+  summarize(.,  average_time = mean(CHILDCARE, na.rm = T))
+
+ggplot(TRDPFTPT.CHILDCARE, aes(x = TRDPFTPT.CHILDCARE$TRDPFTPT, y = PESCHFT.CHILDCARE$average_time)) +
+  geom_col()
+```
+
+### Regression Analysis
+
+This code run a linear regression of marital status, age, sex, number of children (18 or younger), earnings, and full-time versus part-time status. 
+
+```{r reg-analysis}
+## add your regression analysis code here
+reg_model <- lm(CHILDCARE ~ PEMARITL + TEAGE + TESEX + TRCHILDNUM + HEFAMINC + TRDPFTPT, data = atus.all %>% filter(TRCHILDNUM >= 1))
+summary(reg_model)
+```
+
+### Exploratory Analysis of Age and Activities
+
+We will start by suming columns at the activity major categories levels. Saving the resulting data frame as `df.wide`. 
+
+```{r activity-cats}
+atus.wide <- atus.all %>%
+    mutate(act01 = rowSums(.[, grep('t01', colnames(.))]),
+           act02 = rowSums(.[, grep('t02', colnames(.))]),
+           act03 = rowSums(.[, grep('t03', colnames(.))]),
+           act04 = rowSums(.[, grep('t04', colnames(.))]),
+           act05 = rowSums(.[, grep('t05', colnames(.))]),
+           act06 = rowSums(.[, grep('t06', colnames(.))]),
+           act07 = rowSums(.[, grep('t07', colnames(.))]),
+           act08 = rowSums(.[, grep('t08', colnames(.))]),
+           act09 = rowSums(.[, grep('t09', colnames(.))]),
+           act10 = rowSums(.[, grep('t10', colnames(.))]),
+           act11 = rowSums(.[, grep('t11', colnames(.))]),
+           act12 = rowSums(.[, grep('t12', colnames(.))]),
+           act13 = rowSums(.[, grep('t13', colnames(.))]),
+           act14 = rowSums(.[, grep('t14', colnames(.))]),
+           act15 = rowSums(.[, grep('t15', colnames(.))]),
+           act16 = rowSums(.[, grep('t16', colnames(.))]),
+           # act17 = , there is no category 17 in the data
+           act18 = rowSums(.[, grep('t18', colnames(.))])) %>% 
+    select(TUCASEID, TEAGE, HEFAMINC, starts_with("act"))
+```
+
+Converting the data from wide to long and saved the data frame as `df.long`.
+
+```{r wide-to-long}
+atus.long <- atus.wide %>% 
+  # use code to convert the wide format to long.
+  gather(key="ACTIVITY", value="MINS", act01:act18)
+```
+
+Calculating the average time for each age group and call it `AVGMINS`. In `ggplot2`, plot `AVGMINS` against `TEAGE` for each category (multiple panels).
+
+```{r age-activity}
+activity_names <- c(
+  "act01" = "Personal Care", 
+  "act02" = "Household Activities",
+  "act03" = "Caring For & Helping Household Members",
+  "act04" = "Caring For & Helping NonHH Members",
+  "act05" = "Work & Work-Related Activities",
+  "act06" = "Education",
+  "act07" = "Consumer Purchases",
+  "act08" = "Professional & Personal Care Services",
+  "act09" = "Household Services",
+  "act10" = "Government Services & Civic Obligations",
+  "act11" = "Eating and Drinking",
+  "act12" = "Socializing, Relaxing, and Leisure",
+  "act13" = "Sports, Exercise, and Recreation",
+  "act14" = "Religious and Spiritual Activities",
+  "act15" = "Volunteer Activities",
+  "act16" = "Telephone Calls",
+  "act18" = "Traveling"
+)
+atus.long %>% 
+  group_by(ACTIVITY, TEAGE) %>% 
+  summarise(AVGMINS = mean(MINS)) %>% 
+  ggplot(data = .) +
+  geom_point(mapping = aes(x = TEAGE, y = AVGMINS)) + 
+  facet_wrap(~ACTIVITY, labeller = as_labeller(activity_names))
+```
+
+### Exploratory Analysis of Income and Activities
+
+Finally, in this last step, I'm going to create a graph that shows how different income groups spend time doing each activity. 
+
+```{r activity-income}
+## wrangle the data set
+atus.long$income_pref <- factor(cut(atus.long$HEFAMINC,
+                             breaks = c(0,3,6,8,11,13,14,15,Inf),
+                             labels = c("$0-10k", "$10k-20k", "$20k-30k", "$30k-50k", "$50k-75k", "$75k-100k","$100k-150k", "$150k+"),
+                             ordered_result = T))
+
+df <- atus.long %>% 
+  group_by(ACTIVITY, income_pref) %>% 
+  summarise(AVGMINS = mean(MINS)) 
+
+df1 <- aggregate(df$AVGMINS, by=list(ACTIVITY=df$ACTIVITY), FUN=sum)
+df2 <- df[grep(c("10k|30k"), df$income_pref),]
+df2 <- aggregate(df2$AVGMINS, by=list(ACTIVITY=df2$ACTIVITY), FUN=sum)
+x = df2$x/df1$x
+df2$PERCENT <- c(x)
+
+df2 <- df2 %>%
+  arrange(desc(PERCENT))
+
+p <- atus.long %>% 
+  group_by(ACTIVITY, income_pref) %>% 
+  summarise(AVGMINS = mean(MINS)) %>%
+  ggplot() +
+  ## specify you want to generate a bar chart
+  geom_bar(aes(x = ACTIVITY, y = AVGMINS, fill = income_pref),
+                stat = 'identity', position = position_fill(reverse = TRUE)) +
+  ## flip coordinates to make horizontal box plot
+  coord_flip() + 
+  ## change the colors of the bars
+  scale_fill_manual(values = c("royalblue4","royalblue3", "deepskyblue3", "deepskyblue2","goldenrod","darkgoldenrod3", "darkgoldenrod", "darkgoldenrod4")) + 
+  ## change the scale/labels of the actvity variable (x-axis)
+  scale_x_discrete(limits = fct_rev(df2$ACTIVITY),
+                labels = activity_names) +
+  ## change the title, subtitle, and caption
+  labs(title="Income distributions in Americans' pastimes", 
+                subtitle="This chart shows the income distribution of adult\n participans in different major spastimes. Blue groups\n earn less then the median household income\n ($50,000/year) and brown groups earn more.\n The bottom legend show the total population and\n the limits that define each group. Activities are\n odered by the percentage of above-median participation\n, meaning that activities that more people with low\n income do are at the bottom.",
+                caption="Source: American Time Use Survey") +
+  ## change the theme (use ggthemes)
+  theme_void() +
+  guides(fill=guide_legend(title=NULL)) +
+  ## fine tune the theme
+  theme(axis.text = element_text(size = 10,
+                                 hjust = 1),
+                title = element_text(size = 16,
+                                     family = "Times"),
+                plot.subtitle = element_text(size = 12,
+                                     family = "Times"),
+                legend.position = 'bottom', 
+                legend.text = element_text(size=7),
+                legend.title.align = 1, 
+                plot.caption = element_text(size = 10,
+                                            face = "italic"), 
+                panel.grid.major = element_blank(), 
+                panel.grid.minor = element_blank(),
+                axis.text.x = element_blank())
+p
+```
+
+saving the plot.
+
+```{r save-plot}
+## save the plot above
+ggsave(plot = p, filename = "activity-income.png", width = 8, height = 4, path = "figures/explanatory_figures")
+```

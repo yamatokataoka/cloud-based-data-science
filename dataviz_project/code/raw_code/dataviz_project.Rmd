@@ -1,0 +1,304 @@
+---
+title: "Data Visualization Project"
+author: "Yamato Kataoka"
+date: "12/7/2018"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+## install packages if necessary
+list.of.packages <- c("janitor", "ggplot2", "dplyr", "lubridate", "zoo", "forcats", "ggthemes", "knitr", "rmarkdown", "kableExtra")
+new.packages <- list.of.packages[!(list.of.packages %in% installed.packages()[,"Package"])]
+if(length(new.packages)) install.packages(new.packages)
+
+## load packages
+library(janitor)
+library(ggplot2)
+library(dplyr)
+library(lubridate)
+library(zoo)
+library(forcats)
+library(ggthemes)
+library(knitr)
+library(kableExtra)
+
+## set working directory
+knitr::opts_knit$set(root.dir = '/cloud/project/dataviz_project')
+```
+
+# Part 1: Exploratory Data Analysis
+
+The data we'll be using for this part of the project were downloaded from [kaggle](https://www.kaggle.com/aaronschlegel/seattle-pet-licenses/data), and include information about "pet licenses issued by the Seattle Animal Shelter between 2005 and early 2017." We'll be exploring these data and generating a few exploratory plots in the first part of the project.
+
+
+## The Data
+
+First, we'll read the data in from our `data/raw_data` directory.
+
+```{r pet-data, warning=FALSE} 
+pets <- read.csv("data/raw_data/seattle_pet_licenses.csv", stringsAsFactors = FALSE)
+```
+
+## Explore the Data
+
+I'm exploring the data to ensure the answers for each questions on Leanpub course.
+
+```{r pet-explore, warning=FALSE} 
+## Include code here to explore the data 
+## and answer the questions in the exercise
+## Q1: How many pet licenses are included in the dataset?
+nrow(pets)
+
+## Q2: How many unique pet names are included in the dataset (animal_s_name)
+length(unique(pets$animal_s_name))
+
+## Q3: How many different species are included in this dataset (species)?
+length(unique(pets$species))
+
+## Q4:Which of these species is not included in the dataset?
+unique(pets$species)
+```
+
+## Visualize the Data
+
+### Breakdown of how many animals of each three species
+
+```{r pet-barchart, warning=FALSE} 
+## visual breakdown of how many of each species 
+## are included in the dataset
+ggplot(pets) +
+  geom_bar(aes(x=species))
+```
+
+### Top 10 Cat Names
+
+```{r pet-cat-table, warning=FALSE} 
+## Table: Most frequent Cat Name 
+pets %>% 
+  filter(species == "Cat", animal_s_name != "") %>%
+  group_by(animal_s_name) %>% 
+  summarise(n = n()) %>% 
+  arrange(-n) %>%
+  top_n(n = 10) %>%
+  knitr::kable(., caption = "Top 10 Cat Names in Seattle")
+```
+
+### Top 10 Dog Names
+
+```{r pet-dog-table, warning=FALSE} 
+## Table: Most frequent Dog Name
+pets %>% 
+  filter(species == "Dog", animal_s_name != "") %>%
+  group_by(animal_s_name) %>% 
+  summarise(n = n()) %>% 
+  arrange(-n) %>%
+  top_n(n = 10) %>%
+  knitr::kable(., caption = "Top 10 Dog Names in Seattle")
+```
+
+### Calculating and graphing licenses issued over time
+
+```{r pet-linechart, warning=FALSE} 
+## add date and ym columns
+pets$date <- lubridate::ymd_hms(pets$license_issue_date)
+pets$ym <- as.yearmon(pets$date, "%y%m")
+
+## how the number of licenses recorded has changed over time
+pets %>%
+  ## group by yearmonth (`ym`)
+  group_by(ym) %>% 
+  ## count number within each group
+  count(n=n()) %>%
+  ggplot(., aes(ym, n)) + 
+  ## geom name for line chart
+  geom_line() +
+  scale_x_yearmon() + 
+  xlab("") + 
+  ylab("Number of licenses")
+```
+
+### Top 10 areas(zip code) by number of pets
+
+```{r pet-plot, warning=FALSE} 
+### Explore the data -- create your own plot!
+## count number of pets each zip code and chose top 10 zip code
+pet_plot <- pets %>% 
+  group_by(zip_code) %>% 
+  summarise(n = n()) %>% 
+  top_n(n = 10)
+
+## How many pets in zip code
+ggplot(data=pet_plot) +
+  geom_col(mapping = aes(zip_code, n)) +
+  xlab("Zip code") + 
+  ylab("Number of pets")
+```
+
+# Part 2: Explanatory Data Analysis
+
+The data used in this part of the project were dowloaded from [FiveThirtyEight](https://data.fivethirtyeight.com/) - `steak-survey`.  They were originally used in the article: [How Americans Like Their Steak](https://fivethirtyeight.com/features/how-americans-like-their-steak/). The goal of this part of the project will be to recreate the data visualization used in this article.
+
+## The Data
+
+```{r meat-data, warning=FALSE} 
+## read in the data
+steak <- read.csv("data/raw_data/steak-risk-survey.csv", stringsAsFactors = FALSE) %>%
+  ## remove first row which just includes the word "Response" in each column
+  slice(2:n())
+```
+
+## Explore the Data
+
+exploring code for the sequence of questions
+
+```{r meat-explore, warning=FALSE} 
+## Include code here to explore the data 
+## and answer the questions in the exercise
+## Q12 How many people participated in the survey?
+nrow(steak)
+
+## Q13 Which piece of information was NOT collected about the steak survey respondents?
+colnames(steak)
+
+## Q14 How many people responded “Yes” to the question “Do you eat steak?”
+steak %>%
+  filter(Do.you.eat.steak. == "Yes") %>%
+  nrow()
+
+## Q15 How many different (unique) responses were there to the question “How do you like your steak prepared?”
+steak %>%
+  select(How.do.you.like.your.steak.prepared.) %>%
+  filter(How.do.you.like.your.steak.prepared. != "") %>%
+  unique() %>%
+  nrow()
+```
+
+## Wrangle the Data
+
+Simplifying data to just include steak preferences.
+
+```{r meat-wrangle, warning=FALSE} 
+## wrangle the steak data set
+pref <- steak %>% 
+  mutate(steak_pref = factor(How.do.you.like.your.steak.prepared.,
+                             levels = c("Well",
+                                        "Medium Well",
+                                        "Medium",
+                                        "Medium rare",
+                                        "Rare"))) %>% 
+  filter(steak_pref != "") %>% 
+  group_by(steak_pref) %>% 
+  summarise(n = n()) %>%
+  mutate(prop = n / sum(n))
+```
+
+## Visualize the Data
+
+explanatory plot for steak preference
+
+```{r meat-visualize, warning=FALSE}
+## generate the plot 
+p <- ggplot(pref) +
+  ## specify you want to generate a bar chart
+  geom_bar(aes(x = steak_pref, y = prop, fill = steak_pref),
+                stat = 'identity', 
+                width = 0.7) + 
+  ## this adds text labels (you don't have to change anything here)
+  geom_text(aes(label = paste0(as.integer(prop*100),"%"),
+                x = steak_pref,
+                y = prop), 
+            stat= "identity", 
+            hjust = -0.2, 
+            size = 5,
+            color = "grey40") +
+  ## flip coordinates to make horizontal box plot
+  coord_flip() +
+  ## change the colors of the bars
+  scale_fill_manual(values = c("#370B01", 
+                               "#70402C",
+                               "#955732", 
+                               "#B36153",
+                               "#B5413F")) +
+  ## change the scale/labels of the steak-wellness variable (x-axis)
+  scale_x_discrete(limits = levels(fct_rev(pref$steak_pref)),
+                labels = c("Well", 
+                           "Medium Well" = "Medium-well",
+                           "Medium",
+                           "Medium rare"="Medium-rare",
+                           "Rare")) +
+  ## change the scale/lables of the percent axis (y-axis)
+  scale_y_continuous(labels = scales::percent, 
+                expand = c(mult = c(0,0), 
+                           add = c(0,0.035))) +
+  ## change the title, subtitle, and caption
+  labs(title="'How Do You Like Your Steak Prepared?'", 
+                subtitle="From a survey of 432 steak-eating Americans",
+                caption="FiveThirtyEight: Surveymonkey") +
+  ## change the theme (use ggthemes)
+  theme_void() +
+  ## fine tune the theme
+  theme(axis.text = element_text(size = 14), 
+                title = element_text(size = 16), 
+                legend.position="none", 
+                plot.caption=element_text(size = 12), 
+                panel.grid.major = element_blank(), 
+                panel.grid.minor = element_blank(),
+                axis.text.x = element_blank() 
+  )
+
+p
+```
+
+## Save the Plot
+
+```{r save-plot, warning=FALSE}
+## save plot to figures/explanatory_figures directory
+ggsave(plot = p, filename = "steak_R.png", width = 8, height = 4, path = "figures/explanatory_figures")
+```
+
+## Visualize the Data
+
+Wrangling data by gender and then making table.
+
+```{r meat-plot, warning=FALSE} 
+### Explore the data -- create your own plot!
+## wrangle the steak data set
+pref2 <- steak %>% 
+  mutate(Gender = factor(Gender,
+                             levels = c("Male",
+                                        "Female",
+                                        "")))
+
+df <- pref2 %>%
+  group_by(Gender) %>%
+  dplyr::summarize(
+    total = n(), 
+    eat_steak = sum(Do.you.eat.steak. == "Yes") / nrow(pref2) * 100,
+    drink_alcohol = sum(Do.you.ever.drink.alcohol. == "Yes") /   nrow(pref2) * 100
+  )
+
+## generate the table
+## change the caption
+
+kable(df, digits=1, "html", caption="Table : Proportion of people who eat steak and drink alcohol. Most persons who eats steak drink liquor") %>%
+  ## change the kable styling
+  kable_styling("striped", "bordered") %>%
+  ## add header
+  add_header_above(c(" " = 2,  "proportion (%)" = 2)) %>%
+  ## change the footnote
+  footnote(general="FiveThirtyEight: Surveymonkey", general_title="Source:",footnote_as_chunk = T) %>%
+  ## save table as html
+  save_kable(file = "steak_table_R.html", self_contained = T)
+```
+
+## Save this plot 
+
+saving table as html and then convert to png
+
+```{r save-meat-plot, warning=FALSE}
+## save plot to figures/explanatory_figures directory
+install.packages("webshot")
+library(webshot)
+webshot::install_phantomjs()
+webshot::webshot("steak_table_R.html", "figures/explanatory_figures/steak_table_R.png")
+```
