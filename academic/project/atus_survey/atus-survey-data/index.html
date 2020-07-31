@@ -1,0 +1,1159 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="generator" content="Source Themes Academic 3.2.0">
+  <meta name="generator" content="Hugo 0.53" />
+  <meta name="author" content="Yamato Kataoka">
+
+  
+  
+  
+  
+    
+  
+  <meta name="description" content="Analysis of 2016 American Time Use Survey (ATUS) Data">
+
+  
+  <link rel="alternate" hreflang="en-us" href="../../../project/atus_survey/atus-survey-data/">
+
+  
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+  
+  
+  <meta name="theme-color" content="#2962ff">
+  
+
+  
+  
+  
+  
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha256-eSi1q2PG6J7g7ib17yAaWMcrr5GrtohYChqibrV7PBE=" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/academicons/1.8.6/css/academicons.min.css" integrity="sha256-uFVgMKfistnJAfoCUQigIl+JfUaP47GrRKjf6CTPVmw=" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.0/css/all.css" integrity="sha384-aOkxzJ5uQz7WBObEZcHvV5JvRW3TUc2rNPA7pe3AwnsUohiw1Vj2Rgx2KSOkF5+h" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.5/jquery.fancybox.min.css" integrity="sha256-ygkqlh3CYSUri3LhQxzdcm0n1EQvH2Y+U5S2idbLtxs=" crossorigin="anonymous">
+
+    
+    
+    
+      
+    
+    
+      
+      
+        
+          <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css" crossorigin="anonymous">
+        
+      
+    
+
+    
+
+    
+
+  
+
+  
+  
+  <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Montserrat:400,700|Roboto:400,400italic,700|Roboto+Mono">
+  
+
+  <link rel="stylesheet" href="../../../styles.css">
+  
+
+  
+  
+  
+
+  
+  <link rel="alternate" href="../../../index.xml" type="application/rss+xml" title="Yamato Kataoka">
+  <link rel="feed" href="../../../index.xml" type="application/rss+xml" title="Yamato Kataoka">
+  
+
+  <link rel="manifest" href="../../../site.webmanifest">
+  <link rel="icon" type="image/png" href="../../../img/icon.png">
+  <link rel="apple-touch-icon" type="image/png" href="../../../img/icon-192.png">
+
+  <link rel="canonical" href="../../../project/atus_survey/atus-survey-data/">
+
+  
+  
+  
+  
+    
+  
+  <meta property="twitter:card" content="summary_large_image">
+  
+  <meta property="og:site_name" content="Yamato Kataoka">
+  <meta property="og:url" content="/project/atus_survey/atus-survey-data/">
+  <meta property="og:title" content="ATUS Survey Data | Yamato Kataoka">
+  <meta property="og:description" content="Analysis of 2016 American Time Use Survey (ATUS) Data"><meta property="og:image" content="/project/atus_survey/atus-survey-data/featured.jpg">
+  <meta property="og:locale" content="en-us">
+  
+  <meta property="article:published_time" content="2018-12-29T00:00:00&#43;00:00">
+  
+  <meta property="article:modified_time" content="2018-12-29T00:00:00&#43;00:00">
+  
+
+  
+
+  
+
+  <title>ATUS Survey Data | Yamato Kataoka</title>
+
+</head>
+<body id="top" data-spy="scroll" data-target="#TableOfContents" data-offset="71" >
+  <aside class="search-results" id="search">
+  <div class="container">
+    <section class="search-header">
+
+      <div class="row no-gutters justify-content-between mb-3">
+        <div class="col-6">
+          <h1>Search</h1>
+        </div>
+        <div class="col-6 col-search-close">
+          <a class="js-search" href="#"><i class="fas fa-times-circle text-muted" aria-hidden="true"></i></a>
+        </div>
+      </div>
+
+      <div id="search-box">
+        
+        <input name="q" id="search-query" placeholder="Search..." autocapitalize="off"
+        autocomplete="off" autocorrect="off" role="textbox" spellcheck="false" type="search">
+        
+      </div>
+
+    </section>
+    <section class="section-search-results">
+
+      <div id="search-hits">
+        
+      </div>
+
+    </section>
+  </div>
+</aside>
+
+
+<nav class="navbar navbar-light fixed-top navbar-expand-lg py-0" id="navbar-main">
+  <div class="container">
+
+    
+      <a class="navbar-brand" href="../../../">Yamato Kataoka</a>
+      
+      <button type="button" class="navbar-toggler" data-toggle="collapse"
+              data-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
+        <span><i class="fas fa-bars"></i></span>
+      </button>
+      
+
+    
+    <div class="collapse navbar-collapse" id="navbar">
+
+      
+      
+      <ul class="navbar-nav ml-auto">
+        
+
+        
+
+        
+        
+        
+          
+        
+
+        <li class="nav-item">
+          <a class="nav-link" href="../../../#about">
+            
+            <span>Home</span>
+            
+          </a>
+        </li>
+
+        
+        
+
+        
+
+        
+        
+        
+          
+        
+
+        <li class="nav-item">
+          <a class="nav-link" href="../../../#projects">
+            
+            <span>Projects</span>
+            
+          </a>
+        </li>
+
+        
+        
+
+        
+
+        
+        
+        
+          
+        
+
+        <li class="nav-item">
+          <a class="nav-link" href="../../../#contact">
+            
+            <span>Contact</span>
+            
+          </a>
+        </li>
+
+        
+        
+
+        
+
+        
+        
+        
+          
+        
+
+        <li class="nav-item">
+          <a class="nav-link" href="../../../files/resume.pdf">
+            
+            <span>Resume</span>
+            
+          </a>
+        </li>
+
+        
+        
+
+      
+
+        
+
+        
+        <li class="nav-item">
+          <a class="nav-link js-search" href="#"><i class="fas fa-search" aria-hidden="true"></i></a>
+        </li>
+        
+
+        
+
+        
+        <li class="nav-item">
+          <a class="nav-link js-dark-toggle" href="#"><i class="fas fa-moon" aria-hidden="true"></i></a>
+        </li>
+        
+
+      </ul>
+
+    </div>
+  </div>
+</nav>
+
+
+<article class="article article-project" itemscope itemtype="http://schema.org/Article">
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="article-header d-xl-none">
+  <div class="featured-image" style="background-image: url('/project/atus_survey/atus-survey-data/featured_hu3d03a01dcc18bc5be0e67db3d8d209a6_224363_800x0_resize_q75_box.jpg');"></div>
+  <span class="article-header-caption">Photo by rawpixel on Unsplash</span>
+</div>
+
+
+<div class="container-fluid split-header d-none d-xl-block">
+  <div class="row">
+    <div class="col-6">
+      <div class="split-header-content">
+        <h1 itemprop="name">ATUS Survey Data</h1>
+
+        
+
+        
+
+<div class="article-metadata">
+
+  
+  
+  <span itemscope itemprop="author" itemtype="http://schema.org/Person">
+    <meta itemprop="name" content="Yamato Kataoka">
+  </span>
+  
+
+  <span class="article-date">
+    
+    <meta content="2018-12-29 00:00:00 &#43;0000 UTC" itemprop="datePublished">
+    <time datetime="2018-12-29 00:00:00 &#43;0000 UTC" itemprop="dateModified">
+      Dec 29, 2018
+    </time>
+  </span>
+  <span itemscope itemprop="publisher" itemtype="http://schema.org/Person">
+    <meta itemprop="name" content="Yamato Kataoka">
+  </span>
+
+  
+
+  
+  
+
+  
+  
+  
+  <span class="middot-divider"></span>
+  <span class="article-categories">
+    <i class="fas fa-folder"></i>
+    
+    <a href="../../../categories/r/">R</a>, 
+    
+    <a href="../../../categories/survey/">survey</a>, 
+    
+    <a href="../../../categories/data-analysis/">data analysis</a>
+    
+  </span>
+  
+  
+
+  
+
+</div>
+
+
+        
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+        
+<div class="share-box" aria-hidden="true">
+  <ul class="share">
+    <li>
+      <a class="twitter"
+         href="https://twitter.com/intent/tweet?text=ATUS%20Survey%20Data&amp;url=%2fproject%2fatus_survey%2fatus-survey-data%2f"
+         target="_blank" rel="noopener">
+        <i class="fab fa-twitter"></i>
+      </a>
+    </li>
+    <li>
+      <a class="facebook"
+         href="https://www.facebook.com/sharer.php?u=%2fproject%2fatus_survey%2fatus-survey-data%2f"
+         target="_blank" rel="noopener">
+        <i class="fab fa-facebook-f"></i>
+      </a>
+    </li>
+    <li>
+      <a class="linkedin"
+         href="https://www.linkedin.com/shareArticle?mini=true&amp;url=%2fproject%2fatus_survey%2fatus-survey-data%2f&amp;title=ATUS%20Survey%20Data"
+         target="_blank" rel="noopener">
+        <i class="fab fa-linkedin-in"></i>
+      </a>
+    </li>
+    <li>
+      <a class="weibo"
+         href="http://service.weibo.com/share/share.php?url=%2fproject%2fatus_survey%2fatus-survey-data%2f&amp;title=ATUS%20Survey%20Data"
+         target="_blank" rel="noopener">
+        <i class="fab fa-weibo"></i>
+      </a>
+    </li>
+    <li>
+      <a class="email"
+         href="mailto:?subject=ATUS%20Survey%20Data&amp;body=%2fproject%2fatus_survey%2fatus-survey-data%2f">
+        <i class="fas fa-envelope"></i>
+      </a>
+    </li>
+  </ul>
+</div>
+
+
+      </div>
+    </div>
+    <div class="col-6">
+      <div class="split-header-image">
+        <img src="../../../project/atus_survey/atus-survey-data/featured_hu3d03a01dcc18bc5be0e67db3d8d209a6_224363_680x500_fill_q90_box_smart1.jpg" itemprop="image" alt="">
+        <span class="article-header-caption">Photo by rawpixel on Unsplash</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="article-container d-xl-none">
+  <h1 itemprop="name">ATUS Survey Data</h1>
+
+  
+
+  
+
+<div class="article-metadata">
+
+  
+  
+  <span itemscope itemprop="author" itemtype="http://schema.org/Person">
+    <meta itemprop="name" content="Yamato Kataoka">
+  </span>
+  
+
+  <span class="article-date">
+    
+    <meta content="2018-12-29 00:00:00 &#43;0000 UTC" itemprop="datePublished">
+    <time datetime="2018-12-29 00:00:00 &#43;0000 UTC" itemprop="dateModified">
+      Dec 29, 2018
+    </time>
+  </span>
+  <span itemscope itemprop="publisher" itemtype="http://schema.org/Person">
+    <meta itemprop="name" content="Yamato Kataoka">
+  </span>
+
+  
+
+  
+  
+
+  
+  
+  
+  <span class="middot-divider"></span>
+  <span class="article-categories">
+    <i class="fas fa-folder"></i>
+    
+    <a href="../../../categories/r/">R</a>, 
+    
+    <a href="../../../categories/survey/">survey</a>, 
+    
+    <a href="../../../categories/data-analysis/">data analysis</a>
+    
+  </span>
+  
+  
+
+  
+  
+<div class="share-box" aria-hidden="true">
+  <ul class="share">
+    <li>
+      <a class="twitter"
+         href="https://twitter.com/intent/tweet?text=ATUS%20Survey%20Data&amp;url=%2fproject%2fatus_survey%2fatus-survey-data%2f"
+         target="_blank" rel="noopener">
+        <i class="fab fa-twitter"></i>
+      </a>
+    </li>
+    <li>
+      <a class="facebook"
+         href="https://www.facebook.com/sharer.php?u=%2fproject%2fatus_survey%2fatus-survey-data%2f"
+         target="_blank" rel="noopener">
+        <i class="fab fa-facebook-f"></i>
+      </a>
+    </li>
+    <li>
+      <a class="linkedin"
+         href="https://www.linkedin.com/shareArticle?mini=true&amp;url=%2fproject%2fatus_survey%2fatus-survey-data%2f&amp;title=ATUS%20Survey%20Data"
+         target="_blank" rel="noopener">
+        <i class="fab fa-linkedin-in"></i>
+      </a>
+    </li>
+    <li>
+      <a class="weibo"
+         href="http://service.weibo.com/share/share.php?url=%2fproject%2fatus_survey%2fatus-survey-data%2f&amp;title=ATUS%20Survey%20Data"
+         target="_blank" rel="noopener">
+        <i class="fab fa-weibo"></i>
+      </a>
+    </li>
+    <li>
+      <a class="email"
+         href="mailto:?subject=ATUS%20Survey%20Data&amp;body=%2fproject%2fatus_survey%2fatus-survey-data%2f">
+        <i class="fas fa-envelope"></i>
+      </a>
+    </li>
+  </ul>
+</div>
+
+
+  
+
+</div>
+
+
+  
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+</div>
+
+
+
+  <div class="article-container">
+
+    <div class="article-style" itemprop="articleBody">
+      
+
+
+<div id="intro-background" class="section level3">
+<h3>Intro &amp; Background</h3>
+<p>I’ve just finished Final Project of Data Analysis course on leanpub.</p>
+<blockquote class="twitter-tweet" data-lang="en">
+<p lang="en" dir="ltr">
+Completed Data Analysis from <a href="https://twitter.com/leanpub?ref_src=twsrc%5Etfw"><span class="citation">@leanpub</span></a> <br>Completed 9/11 from <a href="https://twitter.com/hashtag/CBDS?src=hash&amp;ref_src=twsrc%5Etfw">#CBDS</a> <a href="https://twitter.com/hashtag/DataScience?src=hash&amp;ref_src=twsrc%5Etfw">#DataScience</a> <a href="https://t.co/ZYIthtiAGP">pic.twitter.com/ZYIthtiAGP</a>
+</p>
+— Yamato Kataoka (<span class="citation">@_yamatt</span>) <a href="https://twitter.com/_yamatt/status/1077159028256497665?ref_src=twsrc%5Etfw">December 24, 2018</a>
+</blockquote>
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+<p>This project has been generated to practice everything I have learned in this course set.</p>
+<p>We’ll be interested in some sort of questions like:</p>
+<blockquote>
+<p>Does women or men spend more time with their children?</p>
+</blockquote>
+<blockquote>
+<p>Do younger parents spend more time with their children?</p>
+</blockquote>
+<blockquote>
+<p>Do richer people spend more time with their children compared to poorer people?</p>
+</blockquote>
+<blockquote>
+<p>Do married couples spend more time with their children compared to single parents?</p>
+</blockquote>
+<blockquote>
+<p>Do full-time workers spend more time with their children compared to part-time workers?</p>
+</blockquote>
+<blockquote>
+<p>How do different income groups spend time doing each activity?</p>
+</blockquote>
+</div>
+<div id="data" class="section level3">
+<h3>Data</h3>
+<p>The <strong>American Time Use Survey (ATUS)</strong> is a time-use survey of Americans, which is sponsored by the Bureau of Labor Statistics (BLS) and conducted by the U.S. Census Bureau. Respondents of the survey are asked to keep a diary for one day carefully recording the amount of time they spend on various activities including working, leisure, childcare, and household activities.</p>
+<p>Included in the data are main <strong>demographic variables</strong> such as respondents’ age, sex, race, marital status, and education. The data also includes <strong>detailed income and employment information</strong> for each respondent. While there are some slight changes to the survey each year, the main questions asked stay the same. You can find data dictionaries (also called codebooks) at <a href="https://www.bls.gov/tus/atuscpscodebk16.pdf">https://www.bls.gov/tus/atuscpscodebk16.pdf</a> for the CPS data and at <a href="https://www.bls.gov/tus/atusintcodebk16.pdf">https://www.bls.gov/tus/atusintcodebk16.pdf</a> for the rest of the variables.</p>
+<div id="importing-data" class="section level4">
+<h4>Importing Data</h4>
+<p>First we’ll have to upload the two .dat files (<strong>atuscps_2016.dat and atussum_2016.dat</strong>) into RStudio Cloud after download from <a href="https://www.bls.gov/tus/#data">https://www.bls.gov/tus/#data</a>
+and create an object called <code>atus.all</code>.:</p>
+<pre class="r"><code>library(janitor)
+library(ggplot2)
+library(dplyr)
+library(lubridate)
+library(zoo)
+library(forcats)
+library(ggthemes)
+library(knitr)
+library(tidyr)</code></pre>
+<pre class="r"><code># Read a file in table format and creates a data frame from it
+atus.cps &lt;- read.delim(&#39;data/raw_data/atuscps_2016.dat&#39;, sep=&quot;,&quot;)
+atus.sum &lt;- read.delim(&#39;data/raw_data/atussum_2016.dat&#39;, sep=&quot;,&quot;)
+# We can create a table including these two dataset 
+# separeted by each respondent(TUCASEID)
+atus.all &lt;- atus.sum %&gt;%
+  left_join(atus.cps %&gt;% filter(TULINENO==1), by = c(&quot;TUCASEID&quot;))</code></pre>
+</div>
+</div>
+<div id="exploratory-data-analysis" class="section level3">
+<h3>Exploratory Data Analysis</h3>
+<p><a href="https://www.bls.gov/tus/lexiconwex2016.pdf">https://www.bls.gov/tus/lexiconwex2016.pdf</a> lists all the activity codes. All activities start with <code>t</code> and then a 6-digit number that combines the major category, the 2nd tier, and the 3rd tier of the activity.</p>
+<p>We’ll figure out <code>How much time, on average, does a person in the sample spend on “Socializing and communicating with others”?</code>. According to <a href="https://www.bls.gov/tus/lexiconwex2016.pdf">https://www.bls.gov/tus/lexiconwex2016.pdf</a>, We’ll find the variable, t120101, associated with “Socializing and communicating with others.”</p>
+<pre class="r"><code>## “Socializing and communicating with others” is 120101 from https://www.bls.gov/tus/lexiconwex2016.pdf
+mean(atus.all$t120101)</code></pre>
+<pre><code>## [1] 38.06481</code></pre>
+<p>We’ll also find the activity code that is associated with “Caring For &amp; Helping HH Children” to show overview of childcare.
+I created a column in the data frame <code>atus.all</code> called <code>CHILDCARE</code> that is the sum of all the columns that start with <code>t0301</code>.</p>
+<pre class="r"><code>atus.all &lt;- atus.all %&gt;%
+  # We can culculate the sum of all the columns that start with `t0301` 
+  # which is related childcare.
+  mutate(CHILDCARE = rowSums(.[, grep(&#39;t0301&#39;, colnames(.))]))</code></pre>
+<p>I’m wiriting code in <code>ggplot2</code> to plot the density function of the variable <code>CHILDCARE</code>.</p>
+<pre class="r"><code>ggplot(atus.all) +
+  geom_density(aes(atus.all$CHILDCARE))</code></pre>
+<p><img src="../../../project/atus_survey/index_files/figure-html/childcare-density-plot-1.png" width="672" /></p>
+<p>Almost all people spend around 30 minites for caring child.</p>
+</div>
+<div id="analysis-approach" class="section level3">
+<h3>Analysis Approach</h3>
+<div id="inferential-data-analysis" class="section level4">
+<h4>Inferential Data Analysis</h4>
+<p>We are going to answer <strong>whether women or men spend more time with their children</strong>. Just start by grouping individuals by their gender and calculate the average time men and women spend with their children.</p>
+<pre class="r"><code>atus.all %&gt;% 
+  # Grouping by TESEX which is refered as respondent&#39;s sex
+  group_by(TESEX) %&gt;% 
+  summarize(.,  average_time = mean(CHILDCARE, na.rm = T))</code></pre>
+<pre><code>## # A tibble: 2 x 2
+##   TESEX average_time
+##   &lt;int&gt;        &lt;dbl&gt;
+## 1     1         19.0
+## 2     2         33.2</code></pre>
+<p>We can see that women (<code>2</code>), on average, spend around 33 minutes more with their children than men(<code>1</code>).</p>
+<p>We’ll use the <code>table()</code> function to look at the variable <code>TRDPFTPT</code> which shows whether the person works full time or part time. You will notice that the variable also takes the value -1. This is probably due to non-response or other data collection reasons. Replace these values with <code>NA</code> in your data so they don’t affect your analysis.</p>
+<pre class="r"><code>## replace -1 in the variable TRDPFTPT with NA.
+atus.all$TRDPFTPT[atus.all$TRDPFTPT==-1]  &lt;- &quot;NA&quot;</code></pre>
+<p>We’ll find 4119 <code>NAs</code> in the dataset.</p>
+<p>Now, we are going to explore what factors affect time spent with children. We are going to answer questions like:</p>
+<blockquote>
+<p>Do younger parents spend more time with their children?</p>
+</blockquote>
+<blockquote>
+<p>Do richer people spend more time with their children compared to poorer people?</p>
+</blockquote>
+<blockquote>
+<p>Do married couples spend more time with their children compared to single parents?</p>
+</blockquote>
+<blockquote>
+<p>Do full-time workers spend more time with their children compared to part-time workers?</p>
+</blockquote>
+<p>We’ll wrangle the data for each questions first.</p>
+<pre class="r"><code># You&#39;d label from 0 to 95 by 5 for each person
+labs &lt;- c(paste(seq(0, 95, by = 5), seq(0 + 5 - 1, 100 - 1, by = 5), sep = &quot;-&quot;), paste(100, &quot;+&quot;, sep = &quot;&quot;))
+
+# Mutated AGEGROUP colume by labs
+atus.all$AGEGROUP &lt;- cut(atus.all$TEAGE, breaks = c(seq(0, 100, by = 5), Inf), labels = labs, right = FALSE)
+
+# Limited data to those who have at least one child (18 or younger) in the household
+# The variable for the number of children (18 or younger) in the household is TRCHILDNUM.
+atus.all.child &lt;- atus.all %&gt;%
+  filter(.$TRCHILDNUM &gt; 0) </code></pre>
+<p>Now, we’ll answer each question.</p>
+<pre class="r"><code>## Do younger parents spend more time with their children?
+AGEGROUP.CHILDCARE &lt;- atus.all.child %&gt;%
+  group_by(AGEGROUP) %&gt;% 
+  summarize(.,  average_time = mean(CHILDCARE, na.rm = T))
+
+# You&#39;d show average time for childcare by age group
+ggplot(AGEGROUP.CHILDCARE, aes(x = AGEGROUP.CHILDCARE$AGEGROUP, y = AGEGROUP.CHILDCARE$average_time)) +
+  geom_col()</code></pre>
+<p><img src="../../../project/atus_survey/index_files/figure-html/data-analysis-1.png" width="672" /></p>
+<pre class="r"><code>## Do richer people spend more time with their children compared to poorer people?
+HEFAMINC.CHILDCARE &lt;- atus.all.child %&gt;%
+  # HEFAMINC is the variable which is Family Income
+  # 1: Less than $5,000
+  # 2: $5,000 to $7,499
+  # 3: $7,500 to $9,999
+  # 4: $10,000 to $12,499
+  # 5: $12,500 to $14,999
+  # 6: $15,000 to $19,999
+  # 7: $20,000 to $24,999
+  # 8: $25,000 to $29,999
+  # 9: $30,000 to $34,999
+  # 10: $35,000 to $39,999
+  # 11: $40,000 to $49,999
+  # 12: $50,000 to $59,999
+  # 13: $60,000 to $74,999
+  # 14: $75,000 to $99,999
+  # 15: $100,000 to $149,999
+  # 16: $150,000 and over
+  group_by(HEFAMINC) %&gt;% 
+  summarize(.,  average_time = mean(CHILDCARE, na.rm = T))
+
+ggplot(HEFAMINC.CHILDCARE, aes(x = HEFAMINC.CHILDCARE$HEFAMINC, y = HEFAMINC.CHILDCARE$average_time)) +
+  geom_col() +
+  scale_x_continuous(breaks = HEFAMINC.CHILDCARE$HEFAMINC) </code></pre>
+<p><img src="../../../project/atus_survey/index_files/figure-html/data-analysis-2.png" width="672" /></p>
+<pre class="r"><code>## Do married couples spend more time with their children compared to single parents?
+PEMARITL.CHILDCARE &lt;- atus.all.child %&gt;%
+  # PEMARITL refers a question, are you now married, widowed, divorced, separated, or never married?
+  # 1: Married - spouse present
+  # 2: Married - spouse absent
+  # 3: Widowed
+  # 4: Divorced
+  # 5: Separated
+  # 6: Never married
+  group_by(PEMARITL) %&gt;% 
+  summarize(.,  average_time = mean(CHILDCARE, na.rm = T))
+
+ggplot(PEMARITL.CHILDCARE, aes(x = PEMARITL.CHILDCARE$PEMARITL, y = PEMARITL.CHILDCARE$average_time)) +
+  geom_col() +
+  scale_x_continuous(breaks = PEMARITL.CHILDCARE$PEMARITL) </code></pre>
+<p><img src="../../../project/atus_survey/index_files/figure-html/data-analysis-3.png" width="672" /></p>
+<pre class="r"><code>## Do full-time workers spend more time with their children compared to part-time workers?
+TRDPFTPT.CHILDCARE &lt;- atus.all.child %&gt;%
+  # Again TRDPFTPT is Full time (1) or part time (2) employment status of respondent
+  group_by(TRDPFTPT) %&gt;% 
+  summarize(.,  average_time = mean(CHILDCARE, na.rm = T))
+
+ggplot(TRDPFTPT.CHILDCARE, aes(x = TRDPFTPT.CHILDCARE$TRDPFTPT, y = TRDPFTPT.CHILDCARE$average_time)) +
+  geom_col()</code></pre>
+<p><img src="../../../project/atus_survey/index_files/figure-html/data-analysis-4.png" width="672" /></p>
+<p>In the analysis above, we looked at bilateral (two-way) relationships. I have learned in this course, however, that other confounding variables can be a source of bias in my analysis. So it’s much better to look at the relationship of all relevant variables associated with time spent with children together.
+We’ll run a linear regression of marital status, age, sex, number of children (18 or younger), earnings, and full-time versus part-time status.</p>
+<pre class="r"><code>reg_model &lt;- lm(CHILDCARE ~ PEMARITL + TEAGE + TESEX + TRCHILDNUM + HEFAMINC + TRDPFTPT, data = atus.all.child) 
+summary(reg_model)</code></pre>
+<pre><code>## 
+## Call:
+## lm(formula = CHILDCARE ~ PEMARITL + TEAGE + TESEX + TRCHILDNUM + 
+##     HEFAMINC + TRDPFTPT, data = atus.all.child)
+## 
+## Residuals:
+##     Min      1Q  Median      3Q     Max 
+## -142.18  -57.55  -31.57   24.01  815.46 
+## 
+## Coefficients:
+##             Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept)  69.2225    10.7976   6.411 1.60e-10 ***
+## PEMARITL    -12.2342     0.8308 -14.726  &lt; 2e-16 ***
+## TEAGE        -1.0881     0.1355  -8.032 1.23e-15 ***
+## TESEX        33.8984     3.1078  10.907  &lt; 2e-16 ***
+## TRCHILDNUM    9.0004     1.5500   5.807 6.83e-09 ***
+## HEFAMINC     -0.4417     0.4038  -1.094    0.274    
+## TRDPFTPT2    -2.4322     4.3800  -0.555    0.579    
+## TRDPFTPTNA   16.4812     3.6774   4.482 7.60e-06 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error: 96.59 on 4305 degrees of freedom
+## Multiple R-squared:  0.08907,    Adjusted R-squared:  0.08759 
+## F-statistic: 60.13 on 7 and 4305 DF,  p-value: &lt; 2.2e-16</code></pre>
+<p>In the regression, the coefficient on the variable age means how much time spent with children changes if age increases by 1. Based on our results, the difference in minutes spent with children between two people with 10 years of age difference is 10 minites.</p>
+<p>We are going to see whether time spent on different activities varies by age. However, we will only consider activities at the major category levels. There are 18 major categories in the data including personal care, household activities, caring for &amp; helping household members, etc. Because each activity column in the data is at the 3rd tier, we will need to start by suming columns at the activity major categories levels.</p>
+<pre class="r"><code># Saved the resulting data frame as df.wide.
+atus.wide &lt;- atus.all %&gt;%
+    mutate(act01 = rowSums(.[, grep(&#39;t01&#39;, colnames(.))]),
+           act02 = rowSums(.[, grep(&#39;t02&#39;, colnames(.))]),
+           act03 = rowSums(.[, grep(&#39;t03&#39;, colnames(.))]),
+           act04 = rowSums(.[, grep(&#39;t04&#39;, colnames(.))]),
+           act05 = rowSums(.[, grep(&#39;t05&#39;, colnames(.))]),
+           act06 = rowSums(.[, grep(&#39;t06&#39;, colnames(.))]),
+           act07 = rowSums(.[, grep(&#39;t07&#39;, colnames(.))]),
+           act08 = rowSums(.[, grep(&#39;t08&#39;, colnames(.))]),
+           act09 = rowSums(.[, grep(&#39;t09&#39;, colnames(.))]),
+           act10 = rowSums(.[, grep(&#39;t10&#39;, colnames(.))]),
+           act11 = rowSums(.[, grep(&#39;t11&#39;, colnames(.))]),
+           act12 = rowSums(.[, grep(&#39;t12&#39;, colnames(.))]),
+           act13 = rowSums(.[, grep(&#39;t13&#39;, colnames(.))]),
+           act14 = rowSums(.[, grep(&#39;t14&#39;, colnames(.))]),
+           act15 = rowSums(.[, grep(&#39;t15&#39;, colnames(.))]),
+           act16 = rowSums(.[, grep(&#39;t16&#39;, colnames(.))]),
+           # act17 = , there is no category 17 in the data
+           act18 = rowSums(.[, grep(&#39;t18&#39;, colnames(.))])) %&gt;% 
+    select(TUCASEID, TEAGE, HEFAMINC, starts_with(&quot;act&quot;))</code></pre>
+<p>I’ll convert the data from wide to long and saved the data frame as <code>df.long</code>.</p>
+<pre class="r"><code>atus.long &lt;- atus.wide %&gt;% 
+  # use code to convert the wide format to long.
+  gather(key=&quot;ACTIVITY&quot;, value=&quot;MINS&quot;, act01:act18)</code></pre>
+<p>Calculating the average time for each age group and call it <code>AVGMINS</code>. In <code>ggplot2</code>, plot <code>AVGMINS</code> against <code>TEAGE</code> for each category (multiple panels).Label each panel in your graph with the appropriate activity name.</p>
+<pre class="r"><code>activity_names &lt;- c(
+  &quot;act01&quot; = &quot;Personal Care&quot;, 
+  &quot;act02&quot; = &quot;Household Activities&quot;,
+  &quot;act03&quot; = &quot;Caring For &amp; Helping Household Members&quot;,
+  &quot;act04&quot; = &quot;Caring For &amp; Helping NonHH Members&quot;,
+  &quot;act05&quot; = &quot;Work &amp; Work-Related Activities&quot;,
+  &quot;act06&quot; = &quot;Education&quot;,
+  &quot;act07&quot; = &quot;Consumer Purchases&quot;,
+  &quot;act08&quot; = &quot;Professional &amp; Personal Care Services&quot;,
+  &quot;act09&quot; = &quot;Household Services&quot;,
+  &quot;act10&quot; = &quot;Government Services &amp; Civic Obligations&quot;,
+  &quot;act11&quot; = &quot;Eating and Drinking&quot;,
+  &quot;act12&quot; = &quot;Socializing, Relaxing, and Leisure&quot;,
+  &quot;act13&quot; = &quot;Sports, Exercise, and Recreation&quot;,
+  &quot;act14&quot; = &quot;Religious and Spiritual Activities&quot;,
+  &quot;act15&quot; = &quot;Volunteer Activities&quot;,
+  &quot;act16&quot; = &quot;Telephone Calls&quot;,
+  &quot;act18&quot; = &quot;Traveling&quot;
+)
+atus.long %&gt;% 
+  group_by(ACTIVITY, TEAGE) %&gt;% 
+  summarise(AVGMINS = mean(MINS)) %&gt;% 
+  ggplot(data = .) +
+  geom_point(mapping = aes(x = TEAGE, y = AVGMINS)) + 
+  facet_wrap(~ACTIVITY, labeller = as_labeller(activity_names))</code></pre>
+<p><img src="../../../project/atus_survey/index_files/figure-html/age-activity-1.png" width="672" /></p>
+<p>As you can see, the average time spent on <code>Personal Care</code>, <code>Work &amp; Work-Related Activities</code> and <code>Socializing, Relaxing, and Leisure</code> varyed by age. In addtion, middle aged people work the most compared to younger and older people based on the activity category 5 (<code>Work &amp; Work-Related Activities</code>) on the graph. About the activity category 12 (<code>Socializing, Relaxing, and Leisure</code>), Older people spend more time socializing.</p>
+</div>
+</div>
+<div id="data-visualization" class="section level3">
+<h3>Data Visualization</h3>
+<p>Finally, we are going to create a graph that shows how different income groups spend time doing each activity. The graph is based on Henrik Lindberg’s data visualization posted <a href="https://raw.githubusercontent.com/halhen/viz-pub/master/pastime-income/pastime.png">here</a>. The only difference is that we are only looking at the 18 major activity categories. We’ll use the long data that you created in the previous section and make the graph as close as possible to the graph by Henrik Lindberg.</p>
+<pre class="r"><code>## wrangle the data set
+atus.long$income_pref &lt;- factor(cut(atus.long$HEFAMINC,
+                             breaks = c(0,3,6,8,11,13,14,15,Inf),
+                             labels = c(&quot;$0-10k&quot;, &quot;$10k-20k&quot;, &quot;$20k-30k&quot;, &quot;$30k-50k&quot;, &quot;$50k-75k&quot;, &quot;$75k-100k&quot;,&quot;$100k-150k&quot;, &quot;$150k+&quot;),
+                             ordered_result = T))
+
+df &lt;- atus.long %&gt;% 
+  group_by(ACTIVITY, income_pref) %&gt;% 
+  summarise(AVGMINS = mean(MINS)) 
+
+df1 &lt;- aggregate(df$AVGMINS, by=list(ACTIVITY=df$ACTIVITY), FUN=sum)
+df2 &lt;- df[grep(c(&quot;10k|30k&quot;), df$income_pref),]
+df2 &lt;- aggregate(df2$AVGMINS, by=list(ACTIVITY=df2$ACTIVITY), FUN=sum)
+x = df2$x/df1$x
+df2$PERCENT &lt;- c(x)
+
+df2 &lt;- df2 %&gt;%
+  arrange(desc(PERCENT))
+
+p &lt;- atus.long %&gt;% 
+  group_by(ACTIVITY, income_pref) %&gt;% 
+  summarise(AVGMINS = mean(MINS)) %&gt;%
+  ggplot() +
+  ## specify you want to generate a bar chart
+  geom_bar(aes(x = ACTIVITY, y = AVGMINS, fill = income_pref),
+                stat = &#39;identity&#39;, position = position_fill(reverse = TRUE)) +
+  ## flip coordinates to make horizontal box plot
+  coord_flip() + 
+  ## change the colors of the bars
+  scale_fill_manual(values = c(&quot;royalblue4&quot;,&quot;royalblue3&quot;, &quot;deepskyblue3&quot;, &quot;deepskyblue2&quot;,&quot;goldenrod&quot;,&quot;darkgoldenrod3&quot;, &quot;darkgoldenrod&quot;, &quot;darkgoldenrod4&quot;)) + 
+  ## change the scale/labels of the actvity variable (x-axis)
+  scale_x_discrete(limits = fct_rev(df2$ACTIVITY),
+                labels = activity_names) +
+  ## change the title, subtitle, and caption
+  labs(title=&quot;Income distributions in Americans&#39; pastimes&quot;, 
+                subtitle=&quot;This chart shows the income distribution of adult\n participans in different major spastimes. Blue groups\n earn less then the median household income\n ($50,000/year) and brown groups earn more.\n The bottom legend show the total population and\n the limits that define each group. Activities are\n odered by the percentage of above-median participation\n, meaning that activities that more people with low\n income do are at the bottom.&quot;,
+                caption=&quot;Source: American Time Use Survey&quot;) +
+  ## change the theme (use ggthemes)
+  theme_void() +
+  guides(fill=guide_legend(title=NULL)) +
+  ## fine tune the theme
+  theme(axis.text = element_text(size = 10,
+                                 hjust = 1),
+                title = element_text(size = 16,
+                                     family = &quot;Times&quot;),
+                plot.subtitle = element_text(size = 12,
+                                     family = &quot;Times&quot;),
+                legend.position = &#39;bottom&#39;, 
+                legend.text = element_text(size=7),
+                legend.title.align = 1, 
+                plot.caption = element_text(size = 10,
+                                            face = &quot;italic&quot;), 
+                panel.grid.major = element_blank(), 
+                panel.grid.minor = element_blank(),
+                axis.text.x = element_blank())
+p</code></pre>
+<p><img src="../../../project/atus_survey/index_files/figure-html/activity-income-1.png" width="672" /></p>
+<p>A few observations:</p>
+<ul>
+<li><p><strong>Blue groups</strong> (less than the median household income　($50,000/year)) spent more time on three categories (<code>Socializing, Relaxing, and Leisure</code>, <code>Religious and Spiritual Activities</code> and <code>Telephone Calls</code>).</p></li>
+<li><p>People with high income <strong>work harder</strong> than ones with low</p></li>
+</ul>
+</div>
+<div id="conclusion" class="section level3">
+<h3>Conclusion</h3>
+<p>We analyzed and answered some questions as the final project on Data Analysis course to try to:</p>
+<ul>
+<li><p>Translate a general question into a data science question</p></li>
+<li><p>Identify the type of data science question we are answering</p></li>
+<li><p>Use data visualization and linear models to answer descriptive, exploratory,</p></li>
+<li><p>inferential and predictive questions</p></li>
+<li><p>Implement our answers in code.</p></li>
+</ul>
+<p>I was fascinated by entire leanpub courses offered by faculty members in the Johns Hopkins Department of Biostatistics, Johns Hopkins Bloomberg School of Public Health. Please check out <a href="http://jhudatascience.org/chromebookdatascience/index.html">the course website</a>.</p>
+</div>
+
+    </div>
+
+    
+
+
+<div class="article-tags">
+  
+  <a class="badge badge-light" href="../../../tags/r/">R</a>
+  
+  <a class="badge badge-light" href="../../../tags/dataviz/">dataviz</a>
+  
+  <a class="badge badge-light" href="../../../tags/analysis/">analysis</a>
+  
+</div>
+
+
+
+    
+
+
+
+
+
+
+<div class="media author-card" itemscope itemtype="http://schema.org/Person">
+  
+  <img class="portrait mr-3" src="../../../img/portrait.png" itemprop="image" alt="Avatar">
+  
+  <div class="media-body">
+    <h5 class="card-title" itemprop="name"><a href="../../../">Yamato Kataoka</a></h5>
+    
+    
+    <ul class="network-icon" aria-hidden="true">
+      
+      
+      
+      
+        
+      
+      
+      
+      
+      
+      <li>
+        <a itemprop="sameAs" href="mailto:yamato.kataoka0601@gmail.com" >
+          <i class="fas fa-envelope"></i>
+        </a>
+      </li>
+      
+      
+      
+      
+        
+      
+      
+      
+      
+      
+        
+      
+      <li>
+        <a itemprop="sameAs" href="//twitter.com/_yamatt" >
+          <i class="fab fa-twitter"></i>
+        </a>
+      </li>
+      
+      
+      
+      
+        
+      
+      
+      
+      
+      
+        
+      
+      <li>
+        <a itemprop="sameAs" href="//github.com/yamakataoka" >
+          <i class="fab fa-github"></i>
+        </a>
+      </li>
+      
+    </ul>
+  </div>
+</div>
+
+
+
+
+    
+    
+
+    
+
+      
+      
+      
+
+      
+      
+      
+
+      
+      
+      
+    
+
+  </div>
+</article>
+
+
+
+<div class="container">
+  <footer class="site-footer">
+  
+  <p class="powered-by">
+    <a href="../../../privacy/">Privacy Policy</a>
+  </p>
+  
+
+  <p class="powered-by">
+    &copy; 2018 &middot; 
+
+    Powered by the
+    <a href="https://sourcethemes.com/academic/" target="_blank" rel="noopener">Academic theme</a> for
+    <a href="https://gohugo.io" target="_blank" rel="noopener">Hugo</a>.
+
+    
+    <span class="float-right" aria-hidden="true">
+      <a href="#" id="back_to_top">
+        <span class="button_icon">
+          <i class="fas fa-chevron-up fa-2x"></i>
+        </span>
+      </a>
+    </span>
+    
+  </p>
+</footer>
+
+</div>
+
+
+<div id="modal" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Cite</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <pre><code class="tex hljs"></code></pre>
+      </div>
+      <div class="modal-footer">
+        <a class="btn btn-outline-primary my-1 js-copy-cite" href="#" target="_blank">
+          <i class="fas fa-copy"></i> Copy
+        </a>
+        <a class="btn btn-outline-primary my-1 js-download-cite" href="#" target="_blank">
+          <i class="fas fa-download"></i> Download
+        </a>
+        <div id="modal-error"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+    
+
+    
+    
+    
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha512-+NqPlbbtM1QqiK8ZAo4Yrj2c4lNQoGv8P79DPtKzj++l5jnN39rHA/xsqn8zE9l0uSoxaCdrOgFs6yjyfbBxSg==" crossorigin="anonymous"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.imagesloaded/4.1.3/imagesloaded.pkgd.min.js" integrity="sha512-umsR78NN0D23AzgoZ11K7raBD+R6hqKojyBZs1w8WvYlsI+QuKRGBx3LFCwhatzBunCjDuJpDHwxD13sLMbpRA==" crossorigin="anonymous"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha256-VsEqElsCHSGmnmHXGQzvoWjWwoznFSZc6hs7ARLRacQ=" crossorigin="anonymous"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.isotope/3.0.4/isotope.pkgd.min.js" integrity="sha512-VDBOIlDbuC4VWxGJNmuFRQ0Li0SKkDpmGyuhAG5LTDLd/dJ/S0WMVxriR2Y+CyPL5gzjpN4f/6iqWVBJlht0tQ==" crossorigin="anonymous"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.5/jquery.fancybox.min.js" integrity="sha256-X5PoE3KU5l+JcX+w09p/wHl9AzK333C4hJ2I9S5mD4M=" crossorigin="anonymous"></script>
+
+      
+        
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js" integrity="sha256-/BfiIkHlHoVihZdc6TFuj7MmJ0TWcWsMXkeDFwhi0zw=" crossorigin="anonymous"></script>
+        
+      
+
+      
+      
+    
+
+    
+    
+
+    
+    
+    
+
+    
+    
+    <script>hljs.initHighlightingOnLoad();</script>
+    
+
+    
+    
+    <script>
+      const search_index_filename = "/index.json";
+      const i18n = {
+        'placeholder': "Search...",
+        'results': "results found",
+        'no_results': "No results found"
+      };
+      const content_type = {
+        'post': "Posts",
+        'project': "Projects",
+        'publication' : "Publications",
+        'talk' : "Talks"
+        };
+    </script>
+    
+
+    
+    
+
+    
+    
+    <script id="search-hit-fuse-template" type="text/x-template">
+      <div class="search-hit" id="summary-{{key}}">
+      <div class="search-hit-content">
+        <div class="search-hit-name">
+          <a href="{{relpermalink}}">{{title}}</a>
+          <div class="article-metadata search-hit-type">{{type}}</div>
+          <p class="search-hit-description">{{snippet}}</p>
+        </div>
+      </div>
+      </div>
+    </script>
+    
+
+    
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/3.2.1/fuse.min.js" integrity="sha256-VzgmKYmhsGNNN4Ph1kMW+BjoYJM2jV5i4IlFoeZA9XI=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/jquery.mark.min.js" integrity="sha256-4HLtjeVgH0eIB3aZ9mLYF6E8oU5chNdjU6p6rrXpl9U=" crossorigin="anonymous"></script>
+    
+
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    <script src="../../../js/academic.min.d037ee5294b166a79dec317c58aea9cc.js"></script>
+
+    
+
+  </body>
+</html>
+

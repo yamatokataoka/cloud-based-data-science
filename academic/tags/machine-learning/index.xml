@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>machine-learning on Yamato Kataoka</title>
+    <link>/tags/machine-learning/</link>
+    <description>Recent content in machine-learning on Yamato Kataoka</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <copyright>&amp;copy; 2018</copyright>
+    <lastBuildDate>Mon, 31 Dec 2018 00:00:00 +0000</lastBuildDate>
+    
+	<atom:link href="/tags/machine-learning/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Ames Housing Prices Project</title>
+      <link>/project/ames_housing_prices_project/ames-housing-prices/</link>
+      <pubDate>Mon, 31 Dec 2018 00:00:00 +0000</pubDate>
+      
+      <guid>/project/ames_housing_prices_project/ames-housing-prices/</guid>
+      <description>Intro &amp;amp; Background I’ve just joined the House Prices: Advanced Regression Techniques Competition, whch is a Getting Started competition.
+Kaggle describes this competition as follows:
+Ask a home buyer to describe their dream house, and they probably won’t begin with the height of the basement ceiling or the proximity to an east-west railroad. But this playground competition’s dataset proves that much more influences price negotiations than the number of bedrooms or a white-picket fence.</description>
+    </item>
+    
+  </channel>
+</rss>
